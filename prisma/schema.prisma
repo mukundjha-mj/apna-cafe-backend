@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Cafe {
+  id         String     @id @default(uuid())
+  name       String
+  address    String
+  latitude   Float?
+  longitude  Float?
+  coverImage String?
+  isOpen     Boolean    @default(true)
+  openTime   String?
+  closeTime  String?
+  phone      String?
+  menuItems  MenuItem[]
+  orders     Order[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model MenuItem {
+  id           String      @id @default(uuid())
+  cafeId       String
+  cafe         Cafe        @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  price        Float
+  category     String
+  imageUrl     String?     // category-based key like "pizza", "burger", etc.
+  isAvailable  Boolean     @default(true)
+  isVeg        Boolean     @default(true)
+  isBestseller Boolean     @default(false)
+  isNew        Boolean     @default(false)
+  sizes        Json?       // [{ "label": "Medium", "price": 99 }]
+  isCombo      Boolean     @default(false)
+  comboContents String?    // e.g. "Aloo Tikki Burger + Classic Fries + Coke"
+  orderItems   OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  userId       String      // Supabase auth user ID
+  cafeId       String
+  cafe         Cafe        @relation(fields: [cafeId], references: [id])
+  status       String      @default("PENDING") // PENDING, ACCEPTED, PREPARING, READY, COMPLETED, REJECTED
+  type         String      // DINE_IN, PICKUP
+  tableNumber  String?
+  paymentMethod String     @default("cash") // cash, card
+  subtotal     Float
+  deliveryFee  Float       @default(0)
+  serviceFee   Float       @default(0)
+  discount     Float       @default(0)
+  totalAmount  Float
+  orderItems   OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity   Int
+  price      Float
+  itemName   String   // snapshot of item name at order time
+  size       String?  // e.g. Medium, Large
+  customNote String?
+}
+
+model Profile {
+  id        String   @id // Same as Supabase Auth UID
+  name      String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
