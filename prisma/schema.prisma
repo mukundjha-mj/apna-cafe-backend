@@ -52,9 +52,10 @@ model Order {
   cafeId       String
   cafe         Cafe        @relation(fields: [cafeId], references: [id])
   status       String      @default("PENDING") // PENDING, ACCEPTED, PREPARING, READY, COMPLETED, REJECTED
-  type         String      // DINE_IN, PICKUP
+  type         String      // DINE_IN, PICKUP, DELIVERY
   tableNumber  String?
-  paymentMethod String     @default("cash") // cash, card
+  address      String?     // For DELIVERY orders
+  paymentMethod String     @default("cash") // cash, card, upi
   subtotal     Float
   deliveryFee  Float       @default(0)
   serviceFee   Float       @default(0)
@@ -79,9 +80,10 @@ model OrderItem {
 }
 
 model Profile {
-  id        String   @id // Same as Supabase Auth UID
-  name      String
-  phone     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id // Same as Supabase Auth UID
+  name            String
+  phone           String?
+  deliveryAddress String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
