@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import http from 'http';
 import dotenv from 'dotenv';
 import { initSocket } from './lib/socket';
@@ -23,6 +24,7 @@ const server = http.createServer(app);
 initSocket(server);
 
 // Middleware
+app.use(compression());
 app.use(cors({
   origin: [
     ...(process.env.FRONTEND_URL?.split(',') || []),

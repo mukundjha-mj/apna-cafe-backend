@@ -44,6 +44,10 @@ model MenuItem {
   orderItems   OrderItem[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+
+  @@index([cafeId])
+  @@index([isAvailable])
+  @@index([cafeId, isAvailable])
 }
 
 model Order {
