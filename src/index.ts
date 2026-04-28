@@ -9,6 +9,7 @@ import { errorHandler } from './middlewares/errorHandler';
 import menuRoutes from './routes/menu.routes';
 import orderRoutes from './routes/order.routes';
 import cafeRoutes from './routes/cafe.routes';
+import profileRoutes from './routes/profile.routes';
 
 dotenv.config();
 
@@ -20,12 +21,13 @@ initSocket(server);
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // API Routes
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cafe', cafeRoutes);
+app.use('/api/profiles', profileRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

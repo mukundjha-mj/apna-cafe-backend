@@ -26,6 +26,19 @@ async function main() {
   console.log(`☕ Created cafe: ${cafe.name} (ID: ${cafe.id})`);
 
   // ===== ALL MENU ITEMS =====
+  const imageMap: Record<string, string> = {
+    pizza: '/assets/food/pizza.png',
+    burger: '/assets/food/burger.png',
+    burgers: '/assets/food/burger.png',
+    fries: '/assets/food/fries.png',
+    momo: '/assets/food/momos.png',
+    momos: '/assets/food/momos.png',
+    shakes: '/assets/food/shakes.png',
+    drinks: '/assets/food/shakes.png',
+    combo: '/assets/food/combo.png',
+    combos: '/assets/food/combo.png',
+  };
+
   const menuItems = [
     // ===== PIZZA =====
     { name: 'Classic Onion Pizza', description: 'Crispy thin crust topped with fresh onion rings and cheese', category: 'pizza', price: 99, sizes: [{ label: 'Medium', price: 99 }, { label: 'Large', price: 149 }], imageUrl: 'pizza', isVeg: true },
@@ -95,9 +108,12 @@ async function main() {
   ];
 
   for (const item of menuItems) {
+    const key = String(item.imageUrl || '').toLowerCase();
+    const resolvedImageUrl = imageMap[key] || item.imageUrl;
     await prisma.menuItem.create({
       data: {
         ...item,
+        imageUrl: resolvedImageUrl,
         cafeId: cafe.id,
       },
     });

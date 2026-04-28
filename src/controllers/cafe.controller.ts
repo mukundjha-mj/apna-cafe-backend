@@ -4,6 +4,7 @@ import prisma from '../lib/prismaClient';
 export const getCafeDetails = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id as string;
+    console.log('Fetching details for cafe:', id);
     const cafe = await prisma.cafe.findUnique({
       where: { id },
     });
@@ -43,6 +44,36 @@ export const createCafe = async (req: Request, res: Response, next: NextFunction
 
     res.status(201).json({ success: true, data: newCafe });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCafe = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id as string;
+    const { isOpen } = req.body;
+    console.log(`[DEBUG] Attempting to update cafe ${id}. New isOpen: ${isOpen}`);
+    
+    // Use updateMany to see how many records actually changed
+    const updateResult = await prisma.cafe.updateMany({
+      where: { id },
+      data: {
+        isOpen: isOpen === true || isOpen === 'true'
+      },
+    });
+
+    console.log(`[DEBUG] Update result:`, updateResult);
+
+    if (updateResult.count === 0) {
+      console.warn(`[DEBUG] No cafe found with ID: ${id}`);
+      res.status(404).json({ success: false, message: 'Cafe not found in database' });
+      return;
+    }
+
+    const updatedCafe = await prisma.cafe.findUnique({ where: { id } });
+    res.status(200).json({ success: true, data: updatedCafe });
+  } catch (error) {
+    console.error(`[DEBUG] Error in updateCafe:`, error);
     next(error);
   }
 };
