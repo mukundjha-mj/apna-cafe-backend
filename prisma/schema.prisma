@@ -91,8 +91,20 @@ model Profile {
   referredById    String?
   orders          Order[]
   transactions    WalletTransaction[]
+  addresses       Address[]
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  profile   Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // Home, Work, Other
+  address   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model WalletTransaction {

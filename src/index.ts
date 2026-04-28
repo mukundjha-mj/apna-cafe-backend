@@ -11,6 +11,7 @@ import orderRoutes from './routes/order.routes';
 import cafeRoutes from './routes/cafe.routes';
 import profileRoutes from './routes/profile.routes';
 import walletRoutes from './routes/wallet.routes';
+import addressRoutes from './routes/address.routes';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/cafe', cafeRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/addresses', addressRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
