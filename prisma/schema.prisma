@@ -82,11 +82,25 @@ model OrderItem {
 }
 
 model Profile {
-  id              String   @id // Same as Supabase Auth UID
+  id              String              @id // Same as Supabase Auth UID
   name            String
   phone           String?
   deliveryAddress String?
+  walletBalance   Float               @default(0)
+  referralCode    String?             @unique
+  referredById    String?
   orders          Order[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  transactions    WalletTransaction[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model WalletTransaction {
+  id        String   @id @default(uuid())
+  userId    String
+  user      Profile  @relation(fields: [userId], references: [id])
+  amount    Float
+  type      String   // EARNED, SPENT
+  reason    String   // REFERRAL, ORDER_PAYMENT, REFUND
+  createdAt DateTime @default(now())
 }

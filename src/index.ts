@@ -10,6 +10,7 @@ import menuRoutes from './routes/menu.routes';
 import orderRoutes from './routes/order.routes';
 import cafeRoutes from './routes/cafe.routes';
 import profileRoutes from './routes/profile.routes';
+import walletRoutes from './routes/wallet.routes';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cafe', cafeRoutes);
 app.use('/api/profiles', profileRoutes);
+app.use('/api/wallet', walletRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

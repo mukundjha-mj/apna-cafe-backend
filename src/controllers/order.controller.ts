@@ -104,6 +104,34 @@ export const updateOrderStatus = async (req: Request, res: Response, next: NextF
       },
     });
 
+    // Handle Referral Reward on First Completed Order
+    if (status === 'COMPLETED') {
+      const completedCount = await prisma.order.count({
+        where: { userId: updatedOrder.userId, status: 'COMPLETED' }
+      });
+
+      if (completedCount === 1 && updatedOrder.user.referredById) {
+        const referrerId = updatedOrder.user.referredById;
+        const rewardAmount = 20;
+
+        await prisma.profile.update({
+          where: { id: referrerId },
+          data: {
+            walletBalance: { increment: rewardAmount }
+          }
+        });
+
+        await prisma.walletTransaction.create({
+          data: {
+            userId: referrerId,
+            amount: rewardAmount,
+            type: 'EARNED',
+            reason: 'REFERRAL'
+          }
+        });
+      }
+    }
+
     const formattedOrder = { ...updatedOrder, orderNumber: formatOrderNumber(updatedOrder.orderNumber) };
 
     // Emit socket event to user tracking the order AND to the cafe dashboard
