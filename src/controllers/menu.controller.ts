@@ -14,9 +14,10 @@ export const getMenuItems = async (req: Request, res: Response, next: NextFuncti
       where.isAvailable = true;
     }
 
-    const menuItems = await prisma.menuItem.findMany({
+    const menuItems = await (prisma as any).menuItem.findMany({
       where,
       orderBy: { createdAt: 'asc' },
+      cacheStrategy: { ttl: 60, swr: 30 },
     });
 
     res.status(200).json({ success: true, data: menuItems });

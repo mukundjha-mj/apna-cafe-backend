@@ -159,7 +159,7 @@ export const getOrdersByCafe = async (req: Request, res: Response, next: NextFun
       orderBy: { createdAt: 'desc' }
     });
     
-    const formattedOrders = orders.map(o => ({ ...o, orderNumber: formatOrderNumber(o.orderNumber) }));
+    const formattedOrders = orders.map((o: any) => ({ ...o, orderNumber: formatOrderNumber(o.orderNumber) }));
     res.status(200).json({ success: true, data: formattedOrders });
   } catch (error) {
     next(error);
@@ -180,7 +180,7 @@ export const getOrdersByUser = async (req: Request, res: Response, next: NextFun
       orderBy: { createdAt: 'desc' }
     });
     
-    const formattedOrders = orders.map(o => ({ ...o, orderNumber: formatOrderNumber(o.orderNumber) }));
+    const formattedOrders = orders.map((o: any) => ({ ...o, orderNumber: formatOrderNumber(o.orderNumber) }));
     res.status(200).json({ success: true, data: formattedOrders });
   } catch (error) {
     next(error);
@@ -255,7 +255,7 @@ export const getDashboardStats = async (req: Request, res: Response, next: NextF
       take: 5
     });
 
-    const popularItems = popularItemsRaw.map(item => ({
+    const popularItems = popularItemsRaw.map((item: any) => ({
       name: item.itemName,
       count: item._count.itemName
     }));
