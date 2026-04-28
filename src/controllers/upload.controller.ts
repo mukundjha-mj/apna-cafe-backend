@@ -26,7 +26,7 @@ export const uploadImage = async (req: Request, res: Response, next: NextFunctio
     await s3Client.send(command);
 
     // Construct the public URL format for Supabase S3
-    const endpoint = process.env.S3_ENDPOINT || 'https://zfnonwnuuzycqpqktxbo.storage.supabase.co/storage/v1/s3';
+    const endpoint = process.env.S3_ENDPOINT || '';
     const publicUrl = `${endpoint.replace('/s3', '/object/public')}/${bucketName}/${key}`;
 
     res.status(200).json({ success: true, url: publicUrl });

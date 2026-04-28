@@ -31,9 +31,10 @@ export const getAllCafes = async (req: Request, res: Response, next: NextFunctio
 
 export const createCafe = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, address, latitude, longitude, phone } = req.body;
+    const { id, name, address, latitude, longitude, phone } = req.body;
     const newCafe = await prisma.cafe.create({
       data: {
+        id, // Required Supabase UID
         name,
         address,
         latitude,

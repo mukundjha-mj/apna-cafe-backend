@@ -12,6 +12,7 @@ import cafeRoutes from './routes/cafe.routes';
 import profileRoutes from './routes/profile.routes';
 import walletRoutes from './routes/wallet.routes';
 import addressRoutes from './routes/address.routes';
+import authRoutes from './routes/auth.routes';
 
 dotenv.config();
 
@@ -22,7 +23,13 @@ const server = http.createServer(app);
 initSocket(server);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    ...(process.env.FRONTEND_URL?.split(',') || []),
+    ...(process.env.ADMIN_URL?.split(',') || [])
+  ],
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 
 // API Routes
@@ -32,6 +39,7 @@ app.use('/api/cafe', cafeRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/addresses', addressRoutes);
+app.use('/api/auth', authRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

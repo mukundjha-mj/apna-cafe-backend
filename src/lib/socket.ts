@@ -6,7 +6,10 @@ let io: Server;
 export const initSocket = (server: HttpServer) => {
   io = new Server(server, {
     cors: {
-      origin: '*', // For development, allow all. Update in production.
+      origin: [
+        ...(process.env.FRONTEND_URL?.split(',') || []),
+        ...(process.env.ADMIN_URL?.split(',') || [])
+      ],
       methods: ['GET', 'POST'],
     },
   });

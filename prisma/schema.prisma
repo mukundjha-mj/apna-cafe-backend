@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Cafe {
-  id         String     @id @default(uuid())
+  id         String     @id // Supabase Auth UID of the owner
   name       String
   address    String
   latitude   Float?
