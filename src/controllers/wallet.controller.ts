@@ -5,9 +5,10 @@ export const getWalletData = async (req: Request, res: Response, next: NextFunct
   try {
     const userId = req.params.userId as string;
     
-    const profile = await prisma.profile.findUnique({
+    let profile = await prisma.profile.findUnique({
       where: { id: userId },
       select: {
+        id: true,
         walletBalance: true,
         referralCode: true,
       }
@@ -16,6 +17,20 @@ export const getWalletData = async (req: Request, res: Response, next: NextFunct
     if (!profile) {
       res.status(404).json({ success: false, message: 'Profile not found' });
       return;
+    }
+
+    // Auto-generate referral code for existing users if missing
+    if (!profile.referralCode) {
+      const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      profile = await prisma.profile.update({
+        where: { id: userId },
+        data: { referralCode: newCode },
+        select: {
+          id: true,
+          walletBalance: true,
+          referralCode: true,
+        }
+      });
     }
 
     const transactions = await prisma.walletTransaction.findMany({
